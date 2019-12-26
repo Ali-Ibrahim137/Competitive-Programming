@@ -18,15 +18,15 @@ int h[MXN][MXN];
 ll temp[MXN][MXN];
 ll g0, x, y, z;
 
-deque<int>dq;
-void add(int val){
-    while(!dq.empty() && dq.back()>=val){
+deque<ii>dq;
+void add(int val, int idx){
+    while(!dq.empty() && dq.back().first>=val){
         dq.pop_back();
     }
-    dq.push_back(val);
+    dq.push_back({val, idx});
 }
-void del(int val){
-    if(!dq.empty() && dq.front()==val)dq.pop_front();
+void del(int idx){
+    if(!dq.empty() && dq.front().second==idx)dq.pop_front();
 }
 ll ans;
 void init(){
@@ -38,27 +38,27 @@ ll solve(){
     for(int i=1;i<=n;i++){
         init();
         for(int j=1;j<=b;j++){
-            add(h[i][j]);
+            add(h[i][j], i);
         }
         int c = 1;
-        temp[i][c++] = dq.front();
+        temp[i][c++] = dq.front().first;
         for(int j=b+1;j<=m;j++){
-            del(h[i][j-b]);
-            add(h[i][j]);
-            temp[i][c++] = dq.front();
+            del(i-b);
+            add(h[i][j], j);
+            temp[i][c++] = dq.front().first;
         }
     }
     init();
     for(int j=1;j<=(m-b+1);j++){
         init();
         for(int i=1;i<=a;i++){
-            add(temp[i][j]);
+            add(temp[i][j], i);
         }
-        ans+=dq.front();
+        ans+=dq.front().first;
         for(int i=a+1;i<=n;i++){
-            del(temp[i-a][j]);
-            add(temp[i][j]);
-            ans+=dq.front();
+            del(i-a);
+            add(temp[i][j], i);
+            ans+=dq.front().first;
         }
     }
     return ans;
@@ -66,7 +66,6 @@ ll solve(){
 void gen(){
     for(int i=1;i<=n;i++){
         for(int j=1;j<=m;j++){
-            int idx = (i-1)*m + j - 1;
             h[i][j] = g0;
             g0 = g0*x + y;
             g0%=z;
