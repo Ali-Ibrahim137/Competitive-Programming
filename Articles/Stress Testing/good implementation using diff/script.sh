@@ -6,7 +6,7 @@ for((i = 1; ; ++i)); do
     ./gen $i > input_file
     ./code < input_file > myAnswer
     ./brute < input_file > correctAnswer
-    diff -w myAnswer correctAnswer > /dev/null || break
+    diff -Z myAnswer correctAnswer > /dev/null || break
     echo "Passed test: "  $i
 done
 echo "WA on the following test:"
